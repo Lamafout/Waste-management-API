@@ -7,6 +7,7 @@ import (
 	"waste_management/config"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -40,10 +41,16 @@ func (c *connection) Create(collection string, document interface{}) error {
 	return err
 }
 
-func (c *connection) Read(collection string, id int64) (map[string]interface{}, error) {
-	filter := bson.M{"_id": id}
+func (c *connection) Read(collection string, id string) (map[string]interface{}, error) {
+	bsonId, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		log.Println("Error while converting id into bson type id: ", err.Error())
+	}
+
+	filter := bson.M{"_id": bsonId}
 	result := map[string]interface{}{}
-	err := c.Client.Database(c.config.Database).Collection(collection).FindOne(context.Background(), filter).Decode(&result)
+	err = c.Client.Database(c.config.Database).Collection(collection).FindOne(context.Background(), filter).Decode(&result)
 
 	if err != nil {
 		return nil, err

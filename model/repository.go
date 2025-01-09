@@ -2,17 +2,17 @@ package model
 
 import model "waste_management/model/entities"
 
-type repository struct {
+type Repository struct {
 	Client *connection
 }
 
-func NewRepository(client *connection) *repository {
-	return &repository{
+func NewRepository(client *connection) *Repository {
+	return &Repository{
 		Client: client,
 	}
 }
 
-func (r *repository) CreateProducer(producer model.Producer) error {
+func (r *Repository) CreateProducer(producer model.Producer) error {
 	err := r.Client.Create("producers", producer)
 
 	if err != nil {
@@ -22,7 +22,7 @@ func (r *repository) CreateProducer(producer model.Producer) error {
 	return nil
 }
 
-func (r *repository) GetProducers() ([]*model.Producer, error) {
+func (r *Repository) GetProducers() ([]*model.Producer, error) {
 	producersMap, err := r.Client.ReadAll("producers")
 
 	if err != nil {
@@ -38,7 +38,7 @@ func (r *repository) GetProducers() ([]*model.Producer, error) {
 	return producers, nil
 }
 
-func (r *repository) CreateTechnology(technology model.Technology) error {
+func (r *Repository) CreateTechnology(technology model.Technology) error {
 	err := r.Client.Create("technologies", technology)
 
 	if err != nil {
@@ -48,7 +48,7 @@ func (r *repository) CreateTechnology(technology model.Technology) error {
 	return nil
 }
 
-func (r *repository) GetTechnology(id int64) (*model.Technology, error) {
+func (r *Repository) GetTechnology(id string) (*model.Technology, error) {
 	technologyMap, err := r.Client.Read("technologies", id)
 
 	if err != nil {
@@ -58,7 +58,7 @@ func (r *repository) GetTechnology(id int64) (*model.Technology, error) {
 	return model.NewTechnologyFromMap(technologyMap), nil
 }
 
-func (r *repository) GetTechnologies() ([]*model.TechnologyShort, error) {
+func (r *Repository) GetTechnologies() ([]*model.TechnologyShort, error) {
 	technologiesMap, err := r.Client.ReadAll("technologies")
 
 	if err != nil {
@@ -75,7 +75,7 @@ func (r *repository) GetTechnologies() ([]*model.TechnologyShort, error) {
 	return technologies, nil
 }
 
-func (r *repository) GetFkkos(filter string) ([]*model.Fkko, error) {
+func (r *Repository) GetFkkos(filter string) ([]*model.Fkko, error) {
 	fkkosMap, err := r.Client.ReadFiltered("fkkos", filter, "name")
 
 	if err != nil {
@@ -91,7 +91,7 @@ func (r *repository) GetFkkos(filter string) ([]*model.Fkko, error) {
 	return fkkos, nil
 }
 
-func (r *repository) GetOkpds(filter string) ([]*model.Okpd, error) {
+func (r *Repository) GetOkpds(filter string) ([]*model.Okpd, error) {
 	okpdsMap, err := r.Client.ReadFiltered("okpds", filter, "name")
 
 	if err != nil {
