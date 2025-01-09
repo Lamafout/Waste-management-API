@@ -13,11 +13,11 @@ import (
 )
 
 type connection struct {
-	Client mongo.Client
-	config config.MongoDbConfig
+	Client *mongo.Client
+	config *config.MongoDbConfig
 }
 
-func NewMongoDBConnection(config config.MongoDbConfig) *connection {
+func NewMongoDBConnection(config *config.MongoDbConfig) *connection {
 	clientOptions := options.Client().ApplyURI(config.Uri)
 	context, cancel := context.WithTimeout(context.Background(), 10 * time.Second)
 	defer cancel()
@@ -33,7 +33,7 @@ func NewMongoDBConnection(config config.MongoDbConfig) *connection {
 
 	log.Println("Connection is created!")
 
-	return &connection{Client: *client, config: config}
+	return &connection{Client: client, config: config}
 }
 
 func (c *connection) Create(collection string, document interface{}) error {
