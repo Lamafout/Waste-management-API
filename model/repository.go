@@ -74,3 +74,35 @@ func (r *repository) GetTechnologies() ([]*model.TechnologyShort, error) {
 
 	return technologies, nil
 }
+
+func (r *repository) GetFkkos(filter string) ([]*model.Fkko, error) {
+	fkkosMap, err := r.Client.ReadFiltered("fkkos", filter, "name")
+
+	if err != nil {
+		return nil, err
+	}
+
+	var fkkos []*model.Fkko
+
+	for _, fkko := range fkkosMap {
+		fkkos = append(fkkos, model.NewFkkoFromMap(fkko))
+	}
+
+	return fkkos, nil
+}
+
+func (r *repository) GetOkpds(filter string) ([]*model.Okpd, error) {
+	okpdsMap, err := r.Client.ReadFiltered("okpds", filter, "name")
+
+	if err != nil {
+		return nil, err
+	}
+
+	var okpds []*model.Okpd
+
+	for _, okpd := range okpdsMap {
+		okpds = append(okpds, model.NewOkpdFromMap(okpd))
+	}
+
+	return okpds, nil
+}

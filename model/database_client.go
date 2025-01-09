@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"log"
 	"time"
 	"waste_management/config"
 
@@ -28,6 +29,8 @@ func NewMongoDBConnection(config config.MongoDbConfig) *connection {
 	if err = client.Ping(context, nil); err != nil {
 		panic(err)
 	}
+
+	log.Println("Connection is created!")
 
 	return &connection{Client: *client, config: config}
 }
@@ -59,6 +62,32 @@ func (c *connection) ReadAll(collection string) ([]map[string]interface{}, error
     defer cursor.Close(context.Background())
 
     var results []map[string]interface{}
+
+    for cursor.Next(context.Background()) {
+        var result map[string]interface{}
+        if err := cursor.Decode(&result); err != nil {
+            return nil, err
+        }
+        results = append(results, result)
+    }
+
+    if err := cursor.Err(); err != nil {
+        return nil, err
+    }
+
+    return results, nil
+}
+
+func (c *connection) ReadFiltered(collection string, clientFilter string, filedName string) ([]map[string]interface{}, error) {
+	filter := bson.M{filedName:clientFilter}
+
+	cursor, err := c.Client.Database(c.config.Database).Collection(collection).Find(context.Background(), filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+
+	var results []map[string]interface{}
 
     for cursor.Next(context.Background()) {
         var result map[string]interface{}
