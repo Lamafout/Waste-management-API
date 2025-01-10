@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	controller "waste_management/controller/controller_interfaces"
+	"waste_management/view/responses"
 )
 
 type TechnologyHandler struct {
@@ -53,14 +54,16 @@ func (h *TechnologyHandler) GetTechnologies(w http.ResponseWriter, r *http.Reque
 	filter := r.URL.Query().Get("filter")
 	page := r.URL.Query().Get("page")
 
-	technologies, err := h.controller.GetTechnologies(filter, page)
+	technologies, amount, err := h.controller.GetTechnologies(filter, page)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	response := responses.NewGetTechnologiesResponse(amount, technologies)
+
 	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(technologies); err != nil {
+	if err := json.NewEncoder(w).Encode(response); err != nil {
         http.Error(w, "Failed to encode response", http.StatusInternalServerError)
         return
     }

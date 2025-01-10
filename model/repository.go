@@ -24,11 +24,11 @@ func (r *Repository) CreateProducer(producer model.Producer) error {
 	return nil
 }
 
-func (r *Repository) GetProducers(filter string, page int) ([]*model.Producer, error) {
+func (r *Repository) GetProducers(filter string, page int) ([]*model.Producer, int64,  error) {
 	producersMap, err := r.Client.ReadFiltered("producers", filter, "name", page)
 
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	var producers []*model.Producer  
@@ -37,7 +37,13 @@ func (r *Repository) GetProducers(filter string, page int) ([]*model.Producer, e
 		producers = append(producers, model.NewProducerFromMap(producer))
 	}
 
-	return producers, nil
+	amount, err := r.Client.Count("producers")
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return producers, amount, nil
 }
 
 func (r *Repository) CreateTechnology(technology model.Technology) error {
@@ -60,11 +66,11 @@ func (r *Repository) GetTechnology(id string) (*model.Technology, error) {
 	return model.NewTechnologyFromMap(technologyMap), nil
 }
 
-func (r *Repository) GetTechnologies(filter string, page int) ([]*model.TechnologyShort, error) {
+func (r *Repository) GetTechnologies(filter string, page int) ([]*model.TechnologyShort, int64,  error) {
 	technologiesMap, err := r.Client.ReadFiltered("technologies", filter, "name", page)
 
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	var technologies []*model.TechnologyShort
@@ -74,7 +80,13 @@ func (r *Repository) GetTechnologies(filter string, page int) ([]*model.Technolo
 		technologies = append(technologies, model.NewTechnologyShort(technologyBase))
 	}
 
-	return technologies, nil
+	amount, err := r.Client.Count("technologies")
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return technologies, amount, nil
 }
 
 func (r *Repository) GetFkkos(filter string) ([]*model.Fkko, error) {

@@ -133,3 +133,12 @@ func (c *connection) ReadFiltered(collection string, clientFilter string, fieldN
 
     return results, nil
 }
+
+func (c *connection) Count(collection string) (int64, error) {
+	count, err := c.Client.Database(c.config.Database).Collection(collection).CountDocuments(context.Background(), bson.M{})
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	controller "waste_management/controller/controller_interfaces"
+	"waste_management/view/responses"
 )
 
 type ProducerHandler struct {
@@ -18,14 +19,16 @@ func (h *ProducerHandler) GetProducers(w http.ResponseWriter, r *http.Request) {
 	filter := r.URL.Query().Get("filter")
 	page := r.URL.Query().Get("page")
 
-	producers, err := h.controller.GetProducers(filter, page)
+	producers, amount, err := h.controller.GetProducers(filter, page)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	response := responses.NewGetProducersResponse(amount, producers)
+
 	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(producers); err != nil {
+	if err := json.NewEncoder(w).Encode(response); err != nil {
         http.Error(w, "Failed to encode response", http.StatusInternalServerError)
         return
     }

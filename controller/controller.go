@@ -15,21 +15,21 @@ func NewController(repository *model.Repository) *Controller {
 	return &Controller{repository: repository}
 }
 
-func (c *Controller) GetProducers(filter string, page string) ([]*entities.Producer, error){
+func (c *Controller) GetProducers(filter string, page string) ([]*entities.Producer, int64, error){
 	pageNum, err := strconv.Atoi(page)
 	if err != nil {
 		log.Println("Error converting page number: ", err)
-		return nil, err
+		return nil, 0, err
 	}
 
-	producers, err := c.repository.GetProducers(filter, pageNum)
+	producers, amount, err := c.repository.GetProducers(filter, pageNum)
 
 	if err != nil {
 		log.Println("Error getting producers: ", err)
-		return nil, err
+		return nil, 0, err
 	}
 
-	return producers, nil
+	return producers, amount, nil
 }
 
 func (c *Controller) PostProducer(m map[string]interface{}) error {
@@ -54,21 +54,21 @@ func (c *Controller) GetTechnology(id string) (*entities.Technology, error) {
 	return technology, nil
 }
 
-func (c *Controller) GetTechnologies(filter string, page string) ([]*entities.TechnologyShort, error) {
+func (c *Controller) GetTechnologies(filter string, page string) ([]*entities.TechnologyShort, int64, error) {
 	pageNum, err := strconv.Atoi(page)
 	if err != nil {
 		log.Println("Error converting page number: ", err)
-		return nil, err
+		return nil, 0, err
 	}
 
-	technologies, err := c.repository.GetTechnologies(filter, pageNum)
+	technologies, amount, err := c.repository.GetTechnologies(filter, pageNum)
 
 	if err != nil {
 		log.Println("Error getting technologies: ", err)
-		return nil, err
+		return nil, 0, err
 	}
 
-	return technologies, nil
+	return technologies, amount, nil
 }
 
 func (c *Controller) PostTechnology(m map[string]interface{}) error {
