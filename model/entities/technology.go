@@ -78,7 +78,6 @@ func NewTechnologyFromMap(m map[string]interface{}) *Technology {
 	return technology
 }
 
-
 type Resources struct {
 	Energy       float64 `json:"energy"`
 	Water        float64 `json:"water"`
@@ -126,6 +125,7 @@ func NewContactsFromMap(m map[string]interface{}) *Contacts {
 type ExpertInfo struct {
 	Conclusion string `json:"conclusion"`
 	Date       int64  `json:"date"`
+	Number     string `json:"number"`
 	Name       string `json:"name"`
 }
 
@@ -133,6 +133,7 @@ func NewExpertInfoFromMap(m map[string]interface{}) *ExpertInfo {
 	return &ExpertInfo{
 		Conclusion: m["conclusion"].(string),
 		Date:       m["date"].(int64),
+		Number:     m["number"].(string),
 		Name:       m["name"].(string),
 	}
 }
