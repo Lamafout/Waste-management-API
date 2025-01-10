@@ -1,6 +1,8 @@
 package model
 
-import model "waste_management/model/entities"
+import (
+	model "waste_management/model/entities"
+)
 
 type Repository struct {
 	Client *connection

@@ -51,8 +51,8 @@ func main() {
 	router.HandleFunc("/producer", producerHandler.PostProducer).Methods(http.MethodPost)
 	router.HandleFunc("/producers", producerHandler.GetProducers).Methods(http.MethodGet)
 
-	router.HandleFunc("fkkos", fkkoHandler.GetFkkos).Methods(http.MethodGet)
-	router.HandleFunc("okpds", okpdHandler.GetOkpds).Methods(http.MethodGet)
+	router.HandleFunc("/fkkos", fkkoHandler.GetFkkos).Methods(http.MethodGet)
+	router.HandleFunc("/okpds", okpdHandler.GetOkpds).Methods(http.MethodGet)
 
 	// Start server
 	log.Println("Server is running on http://localhost:8080")

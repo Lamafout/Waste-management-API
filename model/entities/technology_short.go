@@ -1,5 +1,7 @@
 package model
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 type TechnologyShort struct {
 	Id               string  `json:"id"`
 	Name             string  `json:"name"`
@@ -11,8 +13,15 @@ type TechnologyShort struct {
 }
 
 func NewTechnologyShort(technology *Technology) *TechnologyShort {
+	var id string
+	if technology.Id != primitive.NilObjectID {
+		id = technology.Id.Hex()
+	} else {
+		id = "unknown"
+	}
+
 	return &TechnologyShort{
-		Id:               technology.Id.Hex(),
+		Id:               id,
 		Name:             technology.Name,
 		Assignment:       technology.Assignment,
 		Characteristic:   technology.Characteristic,
