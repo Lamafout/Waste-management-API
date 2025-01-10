@@ -85,8 +85,8 @@ func (c *connection) ReadAll(collection string) ([]map[string]interface{}, error
     return results, nil
 }
 
-func (c *connection) ReadFiltered(collection string, clientFilter string, filedName string) ([]map[string]interface{}, error) {
-	filter := bson.M{filedName:clientFilter}
+func (c *connection) ReadFiltered(collection string, clientFilter string, fieldName string) ([]map[string]interface{}, error) {
+	filter := bson.M{fieldName:clientFilter}
 
 	cursor, err := c.Client.Database(c.config.Database).Collection(collection).Find(context.Background(), filter)
 	if err != nil {
