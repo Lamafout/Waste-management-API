@@ -132,7 +132,7 @@ type ExpertInfo struct {
 func NewExpertInfoFromMap(m map[string]interface{}) *ExpertInfo {
 	return &ExpertInfo{
 		Conclusion: m["conclusion"].(string),
-		Date:       int64(m["date"].(float64)),
+		Date:       m["date"].(int64),
 		Name:       m["name"].(string),
 	}
 }

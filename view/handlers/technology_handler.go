@@ -50,7 +50,9 @@ func (h *TechnologyHandler) GetTechnology(w http.ResponseWriter, r *http.Request
 }
 
 func (h *TechnologyHandler) GetTechnologies(w http.ResponseWriter, r *http.Request) {
-	technologies, err := h.controller.GetTechnologies()
+	filter := r.URL.Query().Get("filter")
+
+	technologies, err := h.controller.GetTechnologies(filter)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -24,8 +24,8 @@ func (r *Repository) CreateProducer(producer model.Producer) error {
 	return nil
 }
 
-func (r *Repository) GetProducers() ([]*model.Producer, error) {
-	producersMap, err := r.Client.ReadAll("producers")
+func (r *Repository) GetProducers(filter string) ([]*model.Producer, error) {
+	producersMap, err := r.Client.ReadFiltered("producers", filter, "name")
 
 	if err != nil {
 		return nil, err
@@ -60,8 +60,8 @@ func (r *Repository) GetTechnology(id string) (*model.Technology, error) {
 	return model.NewTechnologyFromMap(technologyMap), nil
 }
 
-func (r *Repository) GetTechnologies() ([]*model.TechnologyShort, error) {
-	technologiesMap, err := r.Client.ReadAll("technologies")
+func (r *Repository) GetTechnologies(filter string) ([]*model.TechnologyShort, error) {
+	technologiesMap, err := r.Client.ReadFiltered("technologies", filter, "name")
 
 	if err != nil {
 		return nil, err

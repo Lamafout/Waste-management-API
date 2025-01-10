@@ -14,8 +14,8 @@ func NewController(repository *model.Repository) *Controller {
 	return &Controller{repository: repository}
 }
 
-func (c *Controller) GetProducers() ([]*entities.Producer, error){
-	producers, err := c.repository.GetProducers()
+func (c *Controller) GetProducers(filter string) ([]*entities.Producer, error){
+	producers, err := c.repository.GetProducers(filter)
 
 	if err != nil {
 		log.Println("Error getting producers: ", err)
@@ -47,8 +47,8 @@ func (c *Controller) GetTechnology(id string) (*entities.Technology, error) {
 	return technology, nil
 }
 
-func (c *Controller) GetTechnologies() ([]*entities.TechnologyShort, error) {
-	technologies, err := c.repository.GetTechnologies()
+func (c *Controller) GetTechnologies(filter string) ([]*entities.TechnologyShort, error) {
+	technologies, err := c.repository.GetTechnologies(filter)
 
 	if err != nil {
 		log.Println("Error getting technologies: ", err)
