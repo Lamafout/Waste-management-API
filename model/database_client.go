@@ -86,7 +86,12 @@ func (c *connection) ReadAll(collection string) ([]map[string]interface{}, error
 }
 
 func (c *connection) ReadFiltered(collection string, clientFilter string, fieldName string) ([]map[string]interface{}, error) {
-	filter := bson.M{fieldName:clientFilter}
+	filter := bson.M{
+		fieldName: bson.M{
+			"$regex":   ".*" + clientFilter + ".*",
+			"$options": "i",
+		},
+	}
 
 	cursor, err := c.Client.Database(c.config.Database).Collection(collection).Find(context.Background(), filter)
 	if err != nil {
