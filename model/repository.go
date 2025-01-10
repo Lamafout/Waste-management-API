@@ -24,8 +24,8 @@ func (r *Repository) CreateProducer(producer model.Producer) error {
 	return nil
 }
 
-func (r *Repository) GetProducers(filter string) ([]*model.Producer, error) {
-	producersMap, err := r.Client.ReadFiltered("producers", filter, "name")
+func (r *Repository) GetProducers(filter string, page int) ([]*model.Producer, error) {
+	producersMap, err := r.Client.ReadFiltered("producers", filter, "name", page)
 
 	if err != nil {
 		return nil, err
@@ -60,8 +60,8 @@ func (r *Repository) GetTechnology(id string) (*model.Technology, error) {
 	return model.NewTechnologyFromMap(technologyMap), nil
 }
 
-func (r *Repository) GetTechnologies(filter string) ([]*model.TechnologyShort, error) {
-	technologiesMap, err := r.Client.ReadFiltered("technologies", filter, "name")
+func (r *Repository) GetTechnologies(filter string, page int) ([]*model.TechnologyShort, error) {
+	technologiesMap, err := r.Client.ReadFiltered("technologies", filter, "name", page)
 
 	if err != nil {
 		return nil, err
@@ -78,7 +78,7 @@ func (r *Repository) GetTechnologies(filter string) ([]*model.TechnologyShort, e
 }
 
 func (r *Repository) GetFkkos(filter string) ([]*model.Fkko, error) {
-	fkkosMap, err := r.Client.ReadFiltered("fkkos", filter, "name")
+	fkkosMap, err := r.Client.ReadFiltered("fkkos", filter, "name", -1)
 
 	if err != nil {
 		return nil, err
@@ -94,7 +94,7 @@ func (r *Repository) GetFkkos(filter string) ([]*model.Fkko, error) {
 }
 
 func (r *Repository) GetOkpds(filter string) ([]*model.Okpd, error) {
-	okpdsMap, err := r.Client.ReadFiltered("okpds", filter, "name")
+	okpdsMap, err := r.Client.ReadFiltered("okpds", filter, "name", -1)
 
 	if err != nil {
 		return nil, err

@@ -3,6 +3,6 @@ package controller
 import model "waste_management/model/entities"
 
 type ProducerController interface {
-	GetProducers(filter string) ([]*model.Producer, error)
+	GetProducers(filter string, page string) ([]*model.Producer, error)
 	PostProducer(m map[string]interface{}) error
 }

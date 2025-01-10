@@ -16,8 +16,9 @@ func NewProducerHandler(controller controller.ProducerController) *ProducerHandl
 
 func (h *ProducerHandler) GetProducers(w http.ResponseWriter, r *http.Request) {
 	filter := r.URL.Query().Get("filter")
+	page := r.URL.Query().Get("page")
 
-	producers, err := h.controller.GetProducers(filter)
+	producers, err := h.controller.GetProducers(filter, page)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

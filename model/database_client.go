@@ -85,7 +85,9 @@ func (c *connection) ReadAll(collection string) ([]map[string]interface{}, error
     return results, nil
 }
 
-func (c *connection) ReadFiltered(collection string, clientFilter string, fieldName string) ([]map[string]interface{}, error) {
+func (c *connection) ReadFiltered(collection string, clientFilter string, fieldName string, page int) ([]map[string]interface{}, error) {
+	const pageSize = 20
+
 	filter := bson.M{
 		fieldName: bson.M{
 			"$regex":   ".*" + clientFilter + ".*",
@@ -93,7 +95,23 @@ func (c *connection) ReadFiltered(collection string, clientFilter string, fieldN
 		},
 	}
 
-	cursor, err := c.Client.Database(c.config.Database).Collection(collection).Find(context.Background(), filter)
+	// pagination
+	var findOptions *options.FindOptions
+
+	if page >= 0 {
+		skip := pageSize * page
+		limit := int64(pageSize)
+		
+		findOptions = options.Find()
+		findOptions.SetSkip(int64(skip))
+		findOptions.SetLimit(limit)
+	} else {
+		findOptions = options.Find()
+		findOptions.SetSkip(0)
+		findOptions.SetLimit(0)
+	}
+
+	cursor, err := c.Client.Database(c.config.Database).Collection(collection).Find(context.Background(), filter, findOptions)
 	if err != nil {
 		return nil, err
 	}

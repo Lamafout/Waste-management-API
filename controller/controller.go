@@ -2,6 +2,7 @@ package controller
 
 import (
 	"log"
+	"strconv"
 	"waste_management/model"
 	entities "waste_management/model/entities"
 )
@@ -14,8 +15,14 @@ func NewController(repository *model.Repository) *Controller {
 	return &Controller{repository: repository}
 }
 
-func (c *Controller) GetProducers(filter string) ([]*entities.Producer, error){
-	producers, err := c.repository.GetProducers(filter)
+func (c *Controller) GetProducers(filter string, page string) ([]*entities.Producer, error){
+	pageNum, err := strconv.Atoi(page)
+	if err != nil {
+		log.Println("Error converting page number: ", err)
+		return nil, err
+	}
+
+	producers, err := c.repository.GetProducers(filter, pageNum)
 
 	if err != nil {
 		log.Println("Error getting producers: ", err)
@@ -47,8 +54,14 @@ func (c *Controller) GetTechnology(id string) (*entities.Technology, error) {
 	return technology, nil
 }
 
-func (c *Controller) GetTechnologies(filter string) ([]*entities.TechnologyShort, error) {
-	technologies, err := c.repository.GetTechnologies(filter)
+func (c *Controller) GetTechnologies(filter string, page string) ([]*entities.TechnologyShort, error) {
+	pageNum, err := strconv.Atoi(page)
+	if err != nil {
+		log.Println("Error converting page number: ", err)
+		return nil, err
+	}
+
+	technologies, err := c.repository.GetTechnologies(filter, pageNum)
 
 	if err != nil {
 		log.Println("Error getting technologies: ", err)
