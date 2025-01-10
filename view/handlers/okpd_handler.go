@@ -15,7 +15,9 @@ func NewOkpdHandler(controller controller.OkpdController) *OkpdHandler {
 }
 
 func (h *OkpdHandler) GetOkpds(w http.ResponseWriter, r *http.Request) {
-	okpds, err := h.controller.GetOkpds()
+	filter := r.URL.Query().Get("filter")
+
+	okpds, err := h.controller.GetOkpds(filter)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

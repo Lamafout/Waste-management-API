@@ -15,7 +15,9 @@ func NewFkkoHandler(controller controller.FkkoController) *FkkoHandler {
 }
 
 func (h *FkkoHandler) GetFkkos(w http.ResponseWriter, r *http.Request) {
-	fkkos, err := h.controller.GetFkkos()
+	filter := r.URL.Query().Get("filter")
+
+	fkkos, err := h.controller.GetFkkos(filter)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
