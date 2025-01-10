@@ -20,39 +20,64 @@ type Technology struct {
 
 func NewTechnologyFromMap(m map[string]interface{}) *Technology {
 	technology := &Technology{
-		Id:             m["_id"].(primitive.ObjectID),
 		Name:           m["name"].(string),
 		Assignment:     m["assignment"].(string),
 		Characteristic: m["characteristic"].(string),
 		Resources:      NewResourcesFromMap(m["resources"].(map[string]interface{})),
-		// fkko will be added later
-		// okpd will be added later
-		Performance: m["performance"].(float64),
-		// secondaryWaste will be added later
-		Developer: NewContactsFromMap(m["developer"].(map[string]interface{})),
-		// users will be added later
-		UseCase:    m["useCase"].(string),
-		ExpertInfo: NewExpertInfoFromMap(m["expertInfo"].(map[string]interface{})),
+		Performance:    m["performance"].(float64),
+		Developer:      NewContactsFromMap(m["developer"].(map[string]interface{})),
+		UseCase:        m["useCase"].(string),
+		ExpertInfo:     NewExpertInfoFromMap(m["expertInfo"].(map[string]interface{})),
 	}
 
-	for _, fkko := range m["fkko"].(primitive.A) {
-		technology.Fkko = append(technology.Fkko, NewFkkoFromMap(fkko.(map[string]interface{})))
+	if id, ok := m["_id"].(primitive.ObjectID); ok {
+		technology.Id = id
 	}
 
-	for _, okpd := range m["okpd"].(primitive.A) {
-		technology.Okpd = append(technology.Okpd, NewOkpdFromMap(okpd.(map[string]interface{})))
+	// Post request can return interface instead of primitive.A. Cause this we need to convert it
+	if fkkoArray, ok := m["fkko"].(primitive.A); ok {
+		for _, fkko := range fkkoArray {
+			technology.Fkko = append(technology.Fkko, NewFkkoFromMap(fkko.(map[string]interface{})))
+		}
+	} else if fkkoArray, ok := m["fkko"].([]interface{}); ok {
+		for _, fkko := range fkkoArray {
+			technology.Fkko = append(technology.Fkko, NewFkkoFromMap(fkko.(map[string]interface{})))
+		}
 	}
 
-	for _, secondaryWaste := range m["secondaryWaste"].(primitive.A) {
-		technology.SecondaryWaste = append(technology.SecondaryWaste, NewSecondaryWasteFromMap(secondaryWaste.(map[string]interface{})))
+	if okpdArray, ok := m["okpd"].(primitive.A); ok {
+		for _, okpd := range okpdArray {
+			technology.Okpd = append(technology.Okpd, NewOkpdFromMap(okpd.(map[string]interface{})))
+		}
+	} else if okpdArray, ok := m["okpd"].([]interface{}); ok {
+		for _, okpd := range okpdArray {
+			technology.Okpd = append(technology.Okpd, NewOkpdFromMap(okpd.(map[string]interface{})))
+		}
 	}
 
-	for _, user := range m["users"].(primitive.A) {
-		technology.Users = append(technology.Users, NewContactsFromMap(user.(map[string]interface{})))
+	if secondaryWasteArray, ok := m["secondaryWaste"].(primitive.A); ok {
+		for _, secondaryWaste := range secondaryWasteArray {
+			technology.SecondaryWaste = append(technology.SecondaryWaste, NewSecondaryWasteFromMap(secondaryWaste.(map[string]interface{})))
+		}
+	} else if secondaryWasteArray, ok := m["secondaryWaste"].([]interface{}); ok {
+		for _, secondaryWaste := range secondaryWasteArray {
+			technology.SecondaryWaste = append(technology.SecondaryWaste, NewSecondaryWasteFromMap(secondaryWaste.(map[string]interface{})))
+		}
+	}
+
+	if usersArray, ok := m["users"].(primitive.A); ok {
+		for _, user := range usersArray {
+			technology.Users = append(technology.Users, NewContactsFromMap(user.(map[string]interface{})))
+		}
+	} else if usersArray, ok := m["users"].([]interface{}); ok {
+		for _, user := range usersArray {
+			technology.Users = append(technology.Users, NewContactsFromMap(user.(map[string]interface{})))
+		}
 	}
 
 	return technology
 }
+
 
 type Resources struct {
 	Energy       float64 `json:"energy"`
@@ -107,7 +132,7 @@ type ExpertInfo struct {
 func NewExpertInfoFromMap(m map[string]interface{}) *ExpertInfo {
 	return &ExpertInfo{
 		Conclusion: m["conclusion"].(string),
-		Date:       m["date"].(int64),
+		Date:       int64(m["date"].(float64)),
 		Name:       m["name"].(string),
 	}
 }
