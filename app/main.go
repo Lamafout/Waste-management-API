@@ -13,6 +13,26 @@ import (
 	"github.com/joho/godotenv"
 )
 
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Разрешаем доступ с любого источника
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		// Указываем методы, которые разрешены
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		// Указываем разрешённые заголовки
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+		// Если это OPTIONS-запрос, завершаем его без передачи дальше
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		// Передаём управление следующему обработчику
+		next.ServeHTTP(w, r)
+	})
+}
+
 func main() {
 	// Read .env file and create connection config
 
@@ -54,9 +74,11 @@ func main() {
 	router.HandleFunc("/fkkos", fkkoHandler.GetFkkos).Methods(http.MethodGet)
 	router.HandleFunc("/okpds", okpdHandler.GetOkpds).Methods(http.MethodGet)
 
+	routerWithCorse := corsMiddleware(router)
+
 	// Start server
 	log.Println("Server is running on http://localhost:8080")
-	if err := http.ListenAndServe(":8080", router); err != nil {
+	if err := http.ListenAndServe(":8080", routerWithCorse); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }

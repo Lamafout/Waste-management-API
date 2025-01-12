@@ -1,6 +1,11 @@
 package model
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"encoding/json"
+	"strconv"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 type Technology struct {
 	Id             primitive.ObjectID `json:"-" bson:"_id,omitempty"`
@@ -81,7 +86,7 @@ func NewTechnologyFromMap(m map[string]interface{}) *Technology {
 type Resources struct {
 	Energy       float64 `json:"energy"`
 	Water        float64 `json:"water"`
-	UsingPerYear float64 `json:"usingPerYear"`
+	UsingPerYear float64 `json:"usingPerYear" bson:"usingPerYear"`
 }
 
 func NewResourcesFromMap(m map[string]interface{}) *Resources {
@@ -130,9 +135,22 @@ type ExpertInfo struct {
 }
 
 func NewExpertInfoFromMap(m map[string]interface{}) *ExpertInfo {
+	dateValue := int64(0)
+	switch v := m["date"].(type) {
+	case float64:
+		dateValue = int64(v)
+	case int64:
+		dateValue = v
+	case json.Number:
+		parsedValue, err := strconv.ParseInt(string(v), 10, 64)
+		if err == nil {
+			dateValue = parsedValue
+		}
+	}
+
 	return &ExpertInfo{
 		Conclusion: m["conclusion"].(string),
-		Date:       m["date"].(int64),
+		Date:       dateValue,
 		Number:     m["number"].(string),
 		Name:       m["name"].(string),
 	}
