@@ -9,8 +9,9 @@ type Producer struct {
 
 func NewProducerFromMap(m map[string]interface{}) *Producer {
 	return &Producer{
-		Location: m["location"].(string),
-		Name:     m["name"].(string),
-		Fkko:     NewFkkoFromMap(m["fkko"].(map[string]interface{})),
+		Location:    m["location"].(string),
+		Name:        m["name"].(string),
+		Fkko:        NewFkkoFromMap(m["fkko"].(map[string]interface{})),
+		HazardClass: m["hazardClass"].(string),
 	}
 }

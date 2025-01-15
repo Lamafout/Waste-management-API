@@ -86,7 +86,7 @@ func (c *connection) ReadAll(collection string) ([]map[string]interface{}, error
 }
 
 func (c *connection) ReadFiltered(collection string, clientFilter string, fieldName string, page int) ([]map[string]interface{}, error) {
-	const pageSize = 20
+	const pageSize = 5
 
 	filter := bson.M{
 		fieldName: bson.M{
@@ -134,8 +134,22 @@ func (c *connection) ReadFiltered(collection string, clientFilter string, fieldN
     return results, nil
 }
 
-func (c *connection) Count(collection string) (int64, error) {
-	count, err := c.Client.Database(c.config.Database).Collection(collection).CountDocuments(context.Background(), bson.M{})
+func (c *connection) Count(collection string, fields []string, clientFilter string) (int64, error) {
+	var orConditions []bson.M
+	for _, field := range fields {
+		orConditions = append(orConditions, bson.M{
+			field: bson.M{
+				"$regex":   ".*" + clientFilter + ".*",
+				"$options": "i",
+			},
+		})
+	}
+
+	filter := bson.M{
+		"$or": orConditions,
+	}
+
+	count, err := c.Client.Database(c.config.Database).Collection(collection).CountDocuments(context.Background(), filter)
 	if err != nil {
 		return 0, err
 	}

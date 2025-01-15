@@ -15,20 +15,15 @@ import (
 
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Разрешаем доступ с любого источника
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		// Указываем методы, которые разрешены
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-		// Указываем разрешённые заголовки
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
-		// Если это OPTIONS-запрос, завершаем его без передачи дальше
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusOK)
 			return
 		}
 
-		// Передаём управление следующему обработчику
 		next.ServeHTTP(w, r)
 	})
 }
