@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"os"
@@ -72,8 +73,17 @@ func main() {
 	routerWithCorse := corsMiddleware(router)
 
 	// Start server
-	log.Println("Server is running on http://localhost:8080")
-	if err := http.ListenAndServe(":8080", routerWithCorse); err != nil {
+	host, err := os.Open("config/server.json")
+	if (err != nil) {
+		log.Fatalf("Failed to start server: %v", err)
+	}
+
+	var serverConfiguration config.ServerConfig
+
+	json.NewDecoder(host).Decode(&serverConfiguration)
+	
+	log.Println("Server is running on ", serverConfiguration.Host, serverConfiguration.Port)
+	if err := http.ListenAndServe(serverConfiguration.Port, routerWithCorse); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }
